@@ -1,0 +1,9 @@
+Bootstrap:docker
+From:biocontainers/freebayes:1.1.0.46--htslib1.7_3
+Registry: quay.io
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    FREEBAYES=1.1.0.46
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: vuiiscci/bedpostx:3.0.0

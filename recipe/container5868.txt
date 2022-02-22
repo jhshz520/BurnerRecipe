@@ -1,0 +1,29 @@
+BootStrap: docker
+From: ubuntu:18.04
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/certs
+    mkdir -p ${SINGULARITY_ROOTFS}/data
+    mkdir -p ${SINGULARITY_ROOTFS}/repos
+
+%environment
+	export LC_ALL="C"  # Fix locales for pip3 install
+
+%labels
+    AUTHOR xavier.bouthillier@umontreal.ca
+
+%post
+    export CUDA_VISIBLE_DEVICES=''
+
+    echo "------------------------------------------------------"
+    echo "Installing Python 3.6"
+    echo "------------------------------------------------------"
+    apt-get -y update
+    apt-get install -y build-essential
+    apt-get install -y python3.6 python3.6-dev python3-virtualenv virtualenv git gcc wget bzip2 python3-pip
+
+    echo "------------------------------------------------------"
+    echo "Installing PyTorch 1.0.0"
+    echo "------------------------------------------------------"
+    echo ${CUDA_VISIBLE_DEVICES}
+    pip3 install torch==v1.0.0

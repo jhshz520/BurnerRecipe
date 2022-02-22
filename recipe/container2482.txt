@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: bud42/rsfc_conn:v1.0.0

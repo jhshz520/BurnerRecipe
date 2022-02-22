@@ -1,0 +1,37 @@
+Bootstrap: docker
+#From: ubuntu:xenial
+From: openjdk:8u111-jre
+
+#cd <Singularity> folder
+#rm ~/singularity/mp2rage_correction.img && singularity create  --size 5000 ~/singularity/mp2rage_correction.img && sudo singularity bootstrap ~/singularity/mp2rage_correction.img Singularity
+
+#########
+%setup
+#########
+cp install_mp2rage_correction_sudo.sh $SINGULARITY_ROOTFS
+#ln -fs /usr/share/zoneinfo/US/Pacific-New /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
+
+#########
+%post
+#########
+# default-jre
+# 
+apt-get update && apt-get install -y wget unzip sudo libxt6 libxext6
+bash install_mp2rage_correction_sudo.sh /opt
+
+#remove all install scripts
+rm install_mp2rage_correction_sudo.sh
+
+#########
+%environment
+
+
+#told apt-get to skip any interactive steps
+export DEBIAN_FRONTEND=noninteractive
+#export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+#mp2rage_correction
+export LC_ALL=C
+export PATH=/opt/mp2rage_correction:$PATH
+export XAPPLRESDIR=/usr/local/MATLAB/MATLAB_Runtime/v93/X11/app-defaults
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/MATLAB/MATLAB_Runtime/v93/runtime/glnxa64:/usr/local/MATLAB/MATLAB_Runtime/v93/bin/glnxa64:/usr/local/MATLAB/MATLAB_Runtime/v93/sys/os/glnxa64:/usr/local/MATLAB/MATLAB_Runtime/v93/sys/opengl/lib/glnxa64

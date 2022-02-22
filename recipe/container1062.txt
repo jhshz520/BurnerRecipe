@@ -1,0 +1,7 @@
+Bootstrap:docker
+From:ubuntu:latest
+
+%help
+Help me. I'm in the container.
+
+

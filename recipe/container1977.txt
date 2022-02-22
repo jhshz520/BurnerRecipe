@@ -1,0 +1,6 @@
+BootStrap: docker
+From: r-base
+
+%post
+  echo 'source("https://bioconductor.org/biocLite.R"); biocLite("limma"); biocLite("edgeR")' >> /tmp/packages.R
+  Rscript /tmp/packages.R

@@ -1,0 +1,15 @@
+Bootstrap:docker
+From:alpine:3.7
+
+%post
+/bin/sh build.sh
+
+%files
+#Installation of Qualimap
+build.sh
+
+%environment
+    QUALIMAP_VERSION=22-08-17
+
+%labels
+Maintainer	alexander.peltzer@qbic.uni-tuebingen.de

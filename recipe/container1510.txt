@@ -1,0 +1,22 @@
+# Build image from the same container that is used in the CircleCI
+# testing. This image is kept up to date with requirements etc, we
+# only need to actually install Ocellaris in the container
+Bootstrap: docker
+From: trlandet/fenics-dev:py3_CI
+
+%post
+    # Install Ocellaris
+    mkdir /source
+    cd /source
+    git clone https://bitbucket.org/trlandet/ocellaris.git
+    cd ocellaris
+    pip3 install .
+    chmod a+rwX /source
+
+%environment
+    export FENICS_PREFIX=/usr/local
+    export SLEPC_DIR=${FENICS_PREFIX}
+    export PETSC_DIR=${FENICS_PREFIX}
+
+%runscript
+    exec ocellaris "$@"

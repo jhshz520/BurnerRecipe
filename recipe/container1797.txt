@@ -1,0 +1,20 @@
+Bootstrap:docker
+From:ubuntu:latest
+
+%post
+/bin/sh build.sh
+export PATH="/usr/bin/miniconda/bin:$PATH"
+conda config --add channels bioconda
+conda install bowtie2=2.3.0
+
+%files
+#Installation of tool
+build.sh
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    BOWTIE2=v2.3.0
+    PATH="/usr/bin/miniconda/bin:$PATH"
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

@@ -1,0 +1,16 @@
+Bootstrap:docker
+From:alpine:3.6
+
+%post
+/bin/sh build.sh
+
+%files
+#Installation of tool
+build.sh
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    <TOOL>_VERSION=v1.0
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

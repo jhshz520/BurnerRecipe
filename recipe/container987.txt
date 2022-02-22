@@ -1,0 +1,6 @@
+bootstrap:docker
+From:pvdb90/kallisto:v0.43.1
+
+
+%post
+  mkdir -p /cvmfs /scratch /tmpdir /scratch-shared /scratch-local /hpc /projects /lustre1 /lustre2 /lustre4

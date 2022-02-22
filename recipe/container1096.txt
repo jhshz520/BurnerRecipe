@@ -1,0 +1,46 @@
+Bootstrap: docker
+From: singularities/spark:latest
+
+%environment
+  # use bash as default shell
+  SHELL=/bin/bash
+  export SHELL
+
+%setup
+  # runs on host - the path to the image is $SINGULARITY_ROOTFS
+
+%post
+  # post-setup script
+
+  # load environment variables
+  . /environment
+
+  # use bash as default shell
+  echo 'SHELL=/bin/bash' >> /environment
+
+  # make environment file executable
+  chmod +x /environment
+
+  # default mount paths
+  mkdir /scratch /data 
+  
+  # add log mount path location
+  mkdir /usr/local/hadoop-2.8.2/logs
+
+  # set localhost as default for the configuration
+  sed -i.bak "s|\[NAMENODE_HOST\]|localhost|g" /usr/local/hadoop-2.8.2/etc/hadoop/core-site.xml
+  
+  # add additional python packages
+  apt-get update
+  
+  # perhaps one wants 'ps' and 'kill' and 'git' and 'vim'
+  apt-get --yes install procps git vim
+  
+  apt-get --yes install python-numpy python-scipy python-matplotlib ipython python-pandas python-sympy python-nose
+  
+%runscript
+  # executes with the singularity run command
+  # delete this section to use existing docker ENTRYPOINT command
+
+%test
+  # test that script is a success

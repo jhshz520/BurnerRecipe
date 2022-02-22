@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%post
+    apt-get update
+    apt-get install --no-install-recommends -y python3-numba \
+	python3-scipy python3-pandas python3-sympy python3-openpyxl
+    rm -rf /var/lib/apt/lists/*
+
+%test
+    python3 -c "import numba"
+    python3 -c "import sympy"
+    python3 -c "import scipy"
+    python3 -c "import pandas"
+
+%runscript
+    exec time python3 "$@"

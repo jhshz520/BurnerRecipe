@@ -1,0 +1,22 @@
+Bootstrap:docker
+From:ubuntu:latest
+
+%post
+/bin/sh build.sh
+mv /starter.sh /usr/bin/ClipAndMerge
+chmod +x /usr/bin/ClipAndMerge
+wget https://github.com/apeltzer/ClipAndMerge/releases/download/v1.7.4/ClipAndMerge.jar
+mv /ClipAndMerge.jar /usr/bin/ClipAndMerge.jar
+
+
+%files
+#Installation of tool
+build.sh
+starter.sh
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    CLIPANDMERGE=v1.7.4
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

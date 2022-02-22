@@ -1,0 +1,30 @@
+Bootstrap: debootstrap
+OSVersion: stable
+MirrorURL: http://ftp.us.debian.org/debian/
+
+%post
+
+apt-get update
+apt-get install gnupg2 wget eatmydata -y 
+
+
+wget -O- http://neuro.debian.net/lists/stretch.de-md.full | tee /etc/apt/sources.list.d/neurodebian.sources.list
+
+while true; do
+	apt-key adv --recv-keys --keyserver hkp://eu.pool.sks-keyservers.net:80 0xA5D32F012649A5A9 || continue
+	break
+done
+
+# hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
+
+apt-get update 
+
+eatmydata apt-get install fsl-5.0-complete -y
+
+cp /etc/fsl/5.0/fsl.sh /.singularity.d/env/90-environment.sh
+
+#cleanup
+apt-get purge gnupg2 wget eatmydata -y
+apt-get autoclean -y
+apt-get autoremove -y
+rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,44 @@
+Bootstrap: docker
+From: centos:latest
+
+%environment
+# use bash as default shell
+SHELL=/bin/bash
+export SHELL
+
+%setup
+# runs on host - the path to the image is $SINGULARITY_ROOTFS
+
+%post
+# MARCC mounts
+mkdir /scratch /work-zfs /data
+
+# post-setup script
+yum -y install wget which # i like to download and know where things are
+
+yum install -y epel-release
+yum install -y octave octave-devel
+OCTAVE_VERSION=`octave-cli --eval version|tail -1|cut -d\  -f3`
+touch /usr/share/octave/$OCTAVE_VERSION/etc/built-in-docstrings
+
+yum install -y git mercurial autoconf libtool flex unzip make
+
+ompi=ompi
+cd
+git clone https://github.com/open-mpi/ompi.git $ompi
+cd $ompi
+./autogen.pl                                                     > ompi-install.log
+./configure --prefix=/usr/local --enable-shared --enable-static >> ompi-install.log
+make -j5                                                        >> ompi-install.log
+make install                                                    >> ompi-install.log
+
+export LD_CUSTOM_PATH=/usr/local/lib:/usr/local/lib/openmpi
+export LD_LIBRARY_PATH=$LD_CUSTOM_PATH:$LD_LIBRARY_PATH
+export LD_RUN_PATH=$LD_CUSTOM_PATH:$LD_RUN_PATH
+
+octavempi=octavempi
+cd
+hg clone http://hg.code.sf.net/p/octave/mpi $octavempi
+cd $octavempi
+hg archive ../mpi.zip
+octave-cli --eval 'pkg install ../mpi.zip'

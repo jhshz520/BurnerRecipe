@@ -1,0 +1,9 @@
+BootStrap: docker
+FROM: java
+
+%post
+    apt-get update
+    cd /usr/local/bin
+    curl -s https://get.nextflow.io | bash
+    chmod -R 777 /usr/local/bin/nextflow
+    

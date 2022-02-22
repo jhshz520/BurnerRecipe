@@ -1,0 +1,9 @@
+Bootstrap:docker
+From:biocontainers/razers3:3.5.3--0
+Registry: quay.io
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    RAZERS3=3.5.3
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

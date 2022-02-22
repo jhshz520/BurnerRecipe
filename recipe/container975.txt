@@ -1,0 +1,56 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%runscript
+
+	echo "Singularity image for using ROOT, PyROOT, and rootpy"
+
+%post
+
+	echo "Installing git"
+	apt-get update
+	apt-get install -y git
+
+	echo "Installing python"
+	apt-get install -y software-properties-common python-software-properties
+	add-apt-repository ppa:fkrull/deadsnakes
+	apt-get update
+	apt-get install -y python2.7
+
+	echo "Installing mandatory ROOT dependencies"
+	apt-get install -y dpkg-dev
+	apt-get -y dist-upgrade
+	apt-get install -y cmake
+	apt-get install -y g++
+	apt-get install -y build-essential # for gcc
+	apt-get install -y binutils
+	apt-get install -y libx11-dev
+	apt-get install -y libxpm-dev
+	apt-get install -y libxft-dev
+	apt-get install -y libxext-dev
+	apt-get install -y libpng-dev
+	apt-get install -y libjpeg-dev
+
+	echo "Installing wget"
+	apt-get install -y wget
+
+	echo "Installing ROOT"
+	mkdir ~/root_download
+	cd ~/root_download
+	wget https://root.cern.ch/download/root_v6.10.08.source.tar.gz
+	tar -zxf root_v6.10.08.source.tar.gz
+	ls root-6.10.08
+	mkdir ~/root_build
+	cd ~/root_build
+	cmake ~/root_download/root-6.10.08
+	#cmake --build .
+	#source ~/root_build/root-6.10.08/dir/bin/thisroot.sh
+	
+
+	echo "Installing pip and virtualenv"
+	#apt-get install -y python-pip python-dev
+	#pip install --upgrade pip
+	#pip install --upgrade virtualenv
+
+	echo "Installing rootpy"
+	#pip install rootpy

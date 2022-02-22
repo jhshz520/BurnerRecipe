@@ -1,0 +1,15 @@
+Bootstrap:docker
+From:alpine:3.6
+
+%post
+/bin/sh build.sh
+
+%files
+#Installation of Salmon
+build.sh
+
+%environment
+    SALMON_VERSION=v0.8.2
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

@@ -1,0 +1,9 @@
+Bootstrap:docker
+From:biocontainers/skewer:0.2.2--1
+Registry: quay.io
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    SKEWER=0.2.2
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

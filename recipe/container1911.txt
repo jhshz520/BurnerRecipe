@@ -1,0 +1,19 @@
+Bootstrap:docker  
+From:centos:latest  
+
+%labels
+  MAINTAINER David Whiteside
+  SPECIES tools
+
+%environment
+  RAWR_BASE=/code
+  export RAWR_BASE
+
+%post
+  yum install -y wget bzip2
+  cd /root/ && wget https://repo.continuum.io/archive/Anaconda2-5.1.0-Linux-x86_64.sh
+  cd /root/ && chmod 700 ./Anaconda2-5.1.0-Linux-x86_64.sh
+  cd /root/ && bash ./Anaconda2-5.1.0-Linux-x86_64.sh -b -p /opt/anaconda/
+
+%runscript
+  exec /opt/anaconda/bin/anaconda "$@"  

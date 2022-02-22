@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: dcshrum/singularity:cowsay
+
+%help
+A first singularity container.  A cow will report the output of sysbench.
+
+%labels
+  Maintainer Donny Shrum
+  Version v1.1
+
+%post
+  mkdir /panfs
+
+
+%runscript
+  echo "My name is $COW_NAME. I am the best cow." | /usr/games/cowsay > /results.txt
+  echo "Arguments Received: $*" >> /results.txt

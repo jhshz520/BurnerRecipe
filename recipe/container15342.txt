@@ -1,0 +1,25 @@
+BootStrap: yum
+OSVersion: 8
+MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/BaseOS/$basearch/os/
+Include: yum
+
+%runscript
+    exec "$@"
+
+%post
+    dnf install -y epel-release
+    dnf install -y 'dnf-command(config-manager)'
+    dnf config-manager --set-enabled powertools
+    dnf config-manager --set-enabled appstream
+
+    dnf copr enable -y simc/stable
+# install packages required for scacchiera
+    dnf install -y python3-pandas python3-matplotlib python3-numpy 
+# install smnd packages from simc repository
+    dnf install -y wreport bufr2netcdf dballe arkimet libsim
+# other useful packages
+    dnf install -y ncview
+# save some space
+    dnf clean all
+    # rm -rf /var/lib/{dnf,rpm,yum} /var/cache/*
+

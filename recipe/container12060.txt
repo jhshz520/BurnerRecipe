@@ -1,0 +1,121 @@
+BootStrap: debootstrap
+OSVersion: bionic
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+Include: bash vim less man-db apt-utils tzdata
+
+
+%labels
+    MAINTAINER Pierre-Edouard_GUERIN
+    INSTITUTE CNRS
+    TEAM Biogeographie_Ecologie_Vertebres
+    BUILD 1.2
+    SINGULARITY_VERSION 2.4.2-dist
+
+
+
+%runscript
+    echo "Opening container... ubuntu bionic, JAMP !"
+
+
+
+%post
+    mv /etc/apt/sources.list /etc/apt/sources.list.bak
+    echo "deb http://fr.archive.ubuntu.com/ubuntu/ bionic main restricted
+    deb http://fr.archive.ubuntu.com/ubuntu/ bionic-updates main restricted
+    deb http://fr.archive.ubuntu.com/ubuntu/ bionic universe
+    deb http://fr.archive.ubuntu.com/ubuntu/ bionic-updates universe
+    deb http://fr.archive.ubuntu.com/ubuntu/ bionic multiverse
+    deb http://fr.archive.ubuntu.com/ubuntu/ bionic-updates multiverse
+    deb http://fr.archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
+    deb http://security.ubuntu.com/ubuntu bionic-security main restricted
+    deb http://security.ubuntu.com/ubuntu bionic-security universe
+    deb http://security.ubuntu.com/ubuntu bionic-security multiverse" >> /etc/apt/sources.list
+
+
+    ## git, make, wget
+    apt-get -y --force-yes update
+    yes | apt-get install build-essential
+    yes | apt-get install git
+    yes | apt install wget
+    yes | apt-get install autoconf autogen libtool
+
+
+    ## zlib, boost, cmake
+    yes | apt install zlib1g-dev libbz2-dev pkg-config libboost-all-dev gettext cmake
+
+    ## curl, lzma, unzip, pigz
+    yes | apt-get install curl liblzma-dev libncurses5-dev unzip pigz
+
+
+    yes | apt-get install libblas3 libblas-dev liblapack-dev liblapack3 gcc fort77 aptitude
+	yes | aptitude install -y g++ xorg-dev libreadline-dev  gfortran
+	yes | apt-get install libssl-dev libxml2-dev libpcre3-dev liblzma-dev libbz2-dev libcurl4-openssl-dev
+	yes | apt-get install locales
+	echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+	echo "LANG=en_US.UTF-8" > /etc/locale.conf
+	locale-gen en_US.UTF-8
+
+
+    ## python3
+    yes | apt install python3-pip
+
+
+    ## GNU parallel
+    yes | apt install parallel
+    
+    ## cutadapt
+    yes | python3 -m pip install cutadapt
+
+    ## JAVA
+    yes | apt-get install openjdk-8-jdk
+
+    ## vsearch
+    cd $HOME
+    wget https://github.com/torognes/vsearch/archive/v2.13.4.tar.gz
+    tar xzf v2.13.4.tar.gz
+    cd vsearch-2.13.4
+    ./autogen.sh
+    ./configure
+    make
+    make install
+    cd ..
+
+    ## FASTQC
+    cd $HOME
+    wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip
+    yes | unzip fastqc_v0.11.9.zip
+    mv FastQC/* /usr/local/bin/
+
+    ## SRA-toolkit
+    cd $HOME
+    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-ubuntu64.tar.gz
+    tar xzf sratoolkit.2.9.6-1-ubuntu64.tar.gz
+    cd sratoolkit.2.9.6-1-ubuntu64
+    mv bin/* /usr/local/bin/
+
+    ## usearch
+    cd $HOME
+    wget https://github.com/Grelot/bioinfo_singularity_recipes/raw/master/packages/usearch11.0.667_i86linux32 -O /usr/local/bin/usearch
+    chmod 755 /usr/local/bin/usearch
+
+    ## install R from source
+	cd $HOME
+	wget https://cran.rstudio.com/src/base/R-3/R-3.6.0.tar.gz
+	tar xvf R-3.6.0.tar.gz
+	cd R-3.6.0
+	./configure --enable-R-static-lib --with-blas --with-lapack --enable-R-shlib=yes 
+	make
+	make install
+
+	## install JAMP dependencies
+	cd $HOME
+	R --slave -e "install.packages(c('devtools', 'bold', 'XML', 'seqinr', 'fastqcr'), dependencies=T, repos='https://cloud.r-project.org')"
+	R --slave -e 'source("https://install-github.me/r-lib/remotes")'
+	R --slave -e "devtools::install_github('ropensci/rentrez')"
+	R --slave -e "devtools::install_github('VascoElbrecht/PrimerMiner', subdir='PrimerMiner')"
+	R --slave -e "devtools::install_github('VascoElbrecht/JAMP', subdir='JAMP')"
+
+
+
+

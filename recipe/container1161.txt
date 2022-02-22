@@ -1,0 +1,14 @@
+Bootstrap: docker
+From: joshbcohen/vdj_pipeline:latest
+%post
+   mkdir /vdj_pipeline
+   cp ${HOME}/.bashrc /vdj_pipeline
+   mkdir /scratchLocal
+   mkdir /scratchLocal/joc2080
+   mkdir /cluster001
+   mkdir /athena
+   mkdir /boot
+   mkdir /pbtech_mounts
+   mkdir /pbtech_mounts/homes022
+   mkdir /pbtech_mounts/homes031
+   mkdir /pbtech_mounts/softlib001

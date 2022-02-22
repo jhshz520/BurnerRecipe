@@ -1,0 +1,48 @@
+BootStrap: shub
+From: granek/singularity-rstudio-tidyverse:3.5.2
+
+%labels
+    Maintainer Josh Granek
+    Image_Version 0001
+
+##------------------------------------------------------------
+## Build example:
+## sudo singularity build ~/container_images/r24_data_archive_v0001.simg Singularity.data_archive
+
+##
+## Run example:
+## singularity run canu_rstudio.simg ls
+## singularity run --app rstudio canu_rstudio.simg
+##------------------------------------------------------------
+
+%runscript
+  exec "${@}"
+
+%apprun rstudio
+  exec rserver "${@}"
+
+%environment
+  export PATH=/usr/lib/rstudio-server/bin:${PATH}
+  export SHELL=/bin/bash
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LANGUAGE=en_US.UTF-8
+
+%post
+  pip install DukeDSClient
+    # Install extra stuff
+  apt-get update
+  apt-get install -y --no-install-recommends \
+    tree \
+    git
+  apt-get clean
+  rm -rf /var/lib/apt/lists/*
+
+
+sudo apt-get install tree
+
+
+  # mkdir -p /data
+  # mkdir -p /workspace
+  mkdir -p /space
+

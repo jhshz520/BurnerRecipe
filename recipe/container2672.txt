@@ -1,0 +1,9 @@
+Bootstrap:docker
+From:ubuntu:latest
+
+%labels
+MAINTAINER Jia94
+
+%help
+
+Help me . Im in the container.

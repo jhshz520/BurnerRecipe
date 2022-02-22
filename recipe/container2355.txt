@@ -1,0 +1,19 @@
+BootStrap: debootstrap
+OSVersion: xenial
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%runscript
+    echo "I have GCC 4.9.X: "
+    /usr/bin/gcc --version
+
+#%environment
+#    LD_LIBRARY_PATH=/usr/local/cuda-9.0/cuda/lib64:/usr/local/cuda-9.0/lib64
+
+# %setup
+
+%post
+    sed -i 's/$/ universe/' /etc/apt/sources.list
+    mkdir /projects /scratch
+    apt-get -y update
+    apt-get -y install curl emacs gcc-4.9 git htop less man wget
+    /usr/bin/update-alternatives  --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10

@@ -1,0 +1,34 @@
+Bootstrap: shub
+From: StanfordCosyne/pancakes:spm12
+
+# 
+# sudo singularity build spm12 Singularity.spm12
+# sudo singularity build --sandbox spm12-dev Singularity.spm12
+#
+
+%files
+    spm12-pipeline.scif
+    preprocessmri
+    preprocessfmri
+
+%post
+
+    #############################
+    # Scientific Filesystem
+    #############################
+
+    /opt/conda/bin/pip install scif
+    /opt/conda/bin/scif install /spm12-pipeline.scif    
+    rm -rf /spm
+
+%runscript
+
+    HOME=$(mktemp -d --suffix=.matlab)
+    export HOME
+
+    if [ $# -eq 0 ]
+        then
+        exec ${SPM_EXEC} script $@
+    else
+        exec scif run "$@"
+    fi

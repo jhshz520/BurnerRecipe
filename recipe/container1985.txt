@@ -1,0 +1,31 @@
+Bootstrap: shub
+From: shub://singularity-hub.org/remyd1/ubuntu-r-base:src-bioconductor
+
+
+%environment
+  R_VERSION=3.4.3
+  export R_VERSION
+  R_CONFIG_DIR=/etc/R/
+  export R_CONFIG_DIR
+
+%labels
+  Author Remy Dernat
+  Version v0.0.1
+  R_Version 3.4.3
+  build_date 2018 Feb 09
+  R_bioconductor True
+
+%apprun R
+  exec R "$@"
+
+%apprun Rscript
+  exec Rscript "$@"
+
+%runscript
+  exec R "$@"
+
+%post
+  NPROCS=`awk '/^processor/ {s+=1}; END{print s}' /proc/cpuinfo`
+  apt-get install -y jags
+  # installing some packages
+  echo install.packages\(\"rjags\"\, repos\=\'https://cloud.r-project.org\'\, Ncpus\=${NPROCS}\) | R --slave

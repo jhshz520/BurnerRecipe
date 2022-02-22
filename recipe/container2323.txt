@@ -1,0 +1,2 @@
+Bootstrap: docker
+From: vuiiscci/dtiqa:6.0.0

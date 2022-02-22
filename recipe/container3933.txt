@@ -1,0 +1,14 @@
+Bootstrap: docker
+From: nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+
+%labels
+MAINTAINER ECR-Cluster Team
+VERSION 1.0.0
+
+%post
+apt-get update
+apt-get install -y --no-install-recommends make \
+  git libgoogle-glog-dev libgtest-dev libgmp3-dev \
+  libz-dev automake libtool ssh libyaml-dev realpath \
+  wget unzip ca-certificates valgrind subversion \
+  software-properties-common cmake

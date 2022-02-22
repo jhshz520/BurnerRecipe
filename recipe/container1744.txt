@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: python
+
+%setup
+    mkdir ${SINGULARITY_ROOTFS}/scratch0
+    mkdir ${SINGULARITY_ROOTFS}/tools
+
+%files
+    Word2vec /tools/Word2Vec
+    Scripts/pass.py /tools/pass.py
+    InVita/bin/InVita /tools/invita
+
+%post 
+    cd /tools/Word2Vec/dav-word2vec
+    make build
+
+%runscript
+    cp -r /tools ~/
+    cp /scratch0/data.txt tools/Word2Vec/dav-word2vec/bin/data.txt
+    cp /scratch0/hyperParameters.json tools/hyperParameters.json
+    mkdir /scratch0/output
+    
+    cd tools
+    ls
+    python pass.py "hyperParameters.json" 0 "Word2Vec/dav-word2vec/bin/word2vec"
+    mv Word2Vec/dav-word2vec/bin/vec.txt /scratch0/output/

@@ -1,0 +1,42 @@
+Bootstrap: shub
+From: keceli/mpi_benchmark:theta
+%environment
+   export PETSC_DIR=/container/petsc
+   export SLEPC_DIR=/container/slepc
+   export PETSC_ARCH=arch-container
+%post
+   export PETSC_DIR=/container/petsc
+   export SLEPC_DIR=/container/slepc
+   export PETSC_ARCH=arch-container
+   export PETSC_VERSION=v3.11.1
+   export PATH=$PATH:/mpich-3.2.1/install/bin/
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mpich-3.2.1/install/lib
+   yum update -y
+   cd /container
+   git clone https://bitbucket.org/petsc/petsc petsc
+   cd $PETSC_DIR
+   git checkout $PETSC_VERSION
+   ./configure --with-shared-libraries=1 --with-debugging=1 --download-fblaslapack --with-cc=mpicc --with-cxx=mpicxx --with-fc=mpif90
+   make all
+   cd /container
+   git clone https://bitbucket.org/slepc/slepc slepc
+   cd $SLEPC_DIR
+   git checkout $PETSC_VERSION
+   ./configure 
+   make -j 4 all
+   cd /container
+    git clone https://bitbucket.org/keceli/qetsc.git
+    cd qetsc
+    make qetsc
+    cd ../
+    git clone https://bitbucket.org/keceli/siesta-sips.git
+    cd siesta-sips
+    mkdir $PETSC_ARCH
+    cd $PETSC_ARCH
+    sh ../Src/obj_setup.sh && \
+    ../Src/configure --enable-mpi CC=mpicc FC=mpif90 && \
+    echo LIBS='${SLEPC_EPS_LIB} $(SCALAPACK_LIBS) $(BLACS_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(NETCDF_LIBS)' >> arch.make && \
+    echo FFLAGS=-g -O2 -I${PETSC_DIR}/include -I${PETSC_DIR}/${PETSC_ARCH}/include -I${SLEPC_DIR}/${PETSC_ARCH}/include -I${SLEPC_DIR}/include >> arch.make && \
+    make siesta && \
+    mkdir ../Obj && \
+    cp siesta ../Obj/

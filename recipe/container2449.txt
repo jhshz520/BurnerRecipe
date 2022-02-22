@@ -1,0 +1,15 @@
+BootStrap: debootstrap
+OSVersion: artful
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%files
+    /data/cufflinks/test_data.sam /opt
+
+%runscript
+    /usr/bin/cufflinks --no-update-check   /opt/test_data.sam 
+    /usr/bin/tophat -v
+
+%post
+    sed -i 's/$/ universe restricted multiverse/' /etc/apt/sources.list
+    apt-get -y update  
+    apt-get -y install cufflinks man tophat

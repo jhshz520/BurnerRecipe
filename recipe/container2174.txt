@@ -1,0 +1,36 @@
+Bootstrap: docker
+From: mono:5.8.0.127-slim
+
+%environment
+  # use bash as default shell
+  SHELL=/bin/bash
+  export SHELL
+
+%setup
+  # runs on host - the path to the image is $SINGULARITY_ROOTFS
+
+%post
+  # post-setup script
+
+  # load environment variables
+  . /environment
+
+  # use bash as default shell
+  echo 'SHELL=/bin/bash' >> /environment
+
+  # make environment file executable
+  chmod +x /environment
+
+  # default mount paths
+  mkdir /scratch /data 
+
+  apt-get update \
+  && apt-get install -y binutils curl mono-devel ca-certificates-mono fsharp mono-vbnc nuget referenceassemblies-pcl \
+  && rm -rf /var/lib/apt/lists/* /tmp/*
+
+%runscript
+  # executes with the singularity run command
+  # delete this section to use existing docker ENTRYPOINT command
+
+%test
+  # test that script is a success

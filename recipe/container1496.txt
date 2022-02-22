@@ -1,0 +1,23 @@
+Bootstrap:docker
+From:alpine:3.7
+
+%post
+/bin/sh build.sh
+cd /build
+SAMTOOLS_VERSION=1.7
+wget https://github.com/samtools/samtools/releases/download/$SAMTOOLS_VERSION/samtools-$SAMTOOLS_VERSION.tar.bz2
+tar jxf samtools-$SAMTOOLS_VERSION.tar.bz2
+cd samtools-$SAMTOOLS_VERSION
+make
+make install prefix=/usr
+
+
+%files
+#Installation of Samtools
+build.sh
+
+%environment
+SAMTOOLS_VERSION=1.7
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

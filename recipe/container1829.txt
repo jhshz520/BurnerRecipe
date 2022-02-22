@@ -1,0 +1,10 @@
+Bootstrap:docker
+From:biocontainers/igv:2.4.6--0
+Registry: quay.io
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    IGV=2.4.6
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de
+

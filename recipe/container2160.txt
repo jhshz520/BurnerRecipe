@@ -1,0 +1,85 @@
+BootStrap: docker
+From: prace/opa_only_marconi
+
+%labels 
+AUTHOR Giuseppa Muscianisi - g.muscianisi@cineca.it -
+
+%setup
+ echo "/$SINGULARITY_ROOTFS dir is " ${SINGULARITY_ROOTFS}
+ mkdir -p ${SINGULARITY_ROOTFS}/tmpdir
+
+%post
+
+ yum -y groupinstall "Development Tools"
+ yum -y install ipmitool
+ yum -y install freeipmi
+ yum -y install tar vim wget
+
+ ########################################################################################################
+ # Obtain the OpenMPI version 2.1.0
+ cd /tmpdir
+ wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.0.tar.bz2
+ ls -lrt /tmpdir
+ tar -xvf openmpi-2.1.0.tar.bz2
+ cd openmpi-2.1.0
+ ./configure --prefix=/usr/local/openmpi-2.1.0/ 
+
+ make
+ make install
+ ########################################################################################################
+
+ ########################################################################################################
+ # Obtain the OpenMPI version 2.1.1
+ cd /tmpdir
+ wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.1.tar.bz2
+ ls -lrt /tmpdir
+ tar -xvf openmpi-2.1.1.tar.bz2
+ cd openmpi-2.1.1
+ ./configure --prefix=/usr/local/openmpi-2.1.1/ 
+
+ make
+ make install
+ ########################################################################################################
+
+ ########################################################################################################
+ #  Creation of a useful directory for binding purposes #
+ mkdir -p /marconi
+ chmod 777 -R /marconi
+ mkdir -p /scratch
+ chmod 777 -R /scratch
+ ########################################################################################################
+
+ ########################################################################################################
+ # Create test directiry for test case run
+ mkdir -p /test
+ chmod 777 -R /test 
+
+ cd /test
+ # Download of MPI "hello world" and "matrix multiplication" test case
+ wget  https://gitlab.hpc.cineca.it/container_data_example/data_example/raw/master/mpi/hello.c
+ wget  https://gitlab.hpc.cineca.it/container_data_example/data_example/raw/master/mpi/mat_mul.c
+
+ /usr/local/openmpi-2.1.0/bin/mpicc -o hello.210.x hello.c
+ chmod 777 /test/hello.210.x
+
+ /usr/local/openmpi-2.1.0/bin/mpicc -o mat_mul.210.x mat_mul.c
+ chmod 777 /test/mat_mul.210.x
+
+ /usr/local/openmpi-2.1.1/bin/mpicc -o hello.211.x hello.c
+ chmod 777 /test/hello.211.x
+
+ /usr/local/openmpi-2.1.1/bin/mpicc -o mat_mul.211.x mat_mul.c
+ chmod 777 /test/mat_mul.211.x
+
+
+ # Download of OpenMP "hello world" and "matrix multiplication" test case
+ wget  https://gitlab.hpc.cineca.it/container_data_example/data_example/raw/master/omp/hello_world_omp.c
+ wget  https://gitlab.hpc.cineca.it/container_data_example/data_example/raw/master/omp/matrix_multiplication_omp.c
+
+ gcc -o hello_omp.x -fopenmp hello_world_omp.c
+ chmod 777 /test/hello_omp.x
+
+ gcc -o matrix_multiplication_omp.x -fopenmp matrix_multiplication_omp.c
+ chmod 777 /test/matrix_multiplication_omp.x
+
+ ########################################################################################################

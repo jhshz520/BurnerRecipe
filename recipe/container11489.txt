@@ -1,0 +1,89 @@
+BootStrap: docker
+From: centos:centos6
+
+%help
+    This container runs R.
+
+%labels
+    Maintainer Matthew Flister
+
+%environment 
+    export R_LIBS=/opt/R/3.5.0/lib64/R/library:/extR/library1:/extR/library2
+    export PATH=/opt/R/3.5.0/bin:/opt/gcc/5.2.0/bin:${PATH}
+    export LD_LIBRARY_PATH=/opt/gcc/5.2.0/lib:/opt/gcc/5.2.0/lib64:${LD_LIBRARY_PATH}
+
+%post
+    mkdir -p /scratch/global /scratch/local /rcc/stor1/refdata /rcc/stor1/projects /rcc/stor1/depts /extR/library1 /extR/library2
+    mkdir -p /opt/gcc/5.2.0
+    yum -y update
+    yum -y install \
+        wget \
+        gcc \
+        gcc-devel \
+        gcc-c++ \
+        gcc-gfortran \
+        gmp-devel \
+        readline-devel \
+        openssl-devel \
+        perl \
+        java-1.8.0-openjdk-devel \
+        lapack \
+        blas \
+        cairo-devel \
+        libpng-devel \
+        libjpeg-devel
+
+    export PATH=/opt/R/3.5.0/bin:$PATH
+    export LD_LIBRARY_PATH=/opt/R/3.5.0/lib:$LD_LIBRARY_PATH
+    export CFLAGS="-I/opt/R/3.5.0/include"
+    export LDFLAGS="-L/opt/R/3.5.0/lib"
+
+    # install R
+    wget http://zlib.net/zlib-1.2.11.tar.gz
+    tar -xvf zlib-1.2.11.tar.gz
+    cd zlib-1.2.11
+    ./configure --prefix=/opt/R/3.5.0
+    make
+    make install
+    cd ..
+    wget ftp://sourceware.org/pub/bzip2/bzip2-1.0.6.tar.gz
+    tar -xvf bzip2-1.0.6.tar.gz
+    cd bzip2-1.0.6
+    sed -i 's/CFLAGS\=\-Wall/CFLAGS\=\-fPIC \-Wall/g' Makefile
+    make -f Makefile-libbz2_so
+    make clean
+    make install PREFIX=/opt/R/3.5.0
+    cd ..
+    wget http://tukaani.org/xz/xz-5.2.3.tar.gz
+    tar -xvf xz-5.2.3.tar.gz
+    cd xz-5.2.3
+    ./configure --prefix=/opt/R/3.5.0
+    make
+    make install
+    cd ..
+    wget ftp://ftp.pcre.org/pub/pcre/pcre-8.42.tar.gz
+    tar -xvf pcre-8.42.tar.gz
+    cd pcre-8.42
+    ./configure --prefix=/opt/R/3.5.0 --enable-utf8
+    make
+    make install
+    cd ..
+    wget  https://curl.haxx.se/download/curl-7.59.0.tar.gz
+    tar -xvf curl-7.59.0.tar.gz
+    cd curl-7.59.0
+    ./configure --prefix=/opt/R/3.5.0
+    make
+    make install
+    cd ..
+
+    export R_VERSION=3.5.0
+    export R_URL=https://cran.r-project.org/src/base/R-3/R-${R_VERSION}.tar.gz
+    wget $R_URL
+    tar -xvf R-${R_VERSION}.tar.gz
+    cd R-${R_VERSION}
+    ./configure --prefix=/opt/R/3.5.0 --enable-R-shlib --with-cairo --with-jpeglib --with-readline --with-tcltk --with-blas --with-lapack --enable-R-profiling --enable-memory-profiling --with-x=no
+    make && make install
+
+    # cleanup
+    cd .. && rm -rf R-${R_VERSION}*
+

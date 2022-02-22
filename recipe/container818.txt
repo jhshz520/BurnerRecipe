@@ -1,0 +1,7 @@
+bootstrap:docker
+From:pvdb90/trimmomatic
+
+
+
+%post
+  mkdir -p /cvmfs /scratch /tmpdir /scratch-shared /scratch-local /hpc /projects /lustre1 /lustre2 /lustre4

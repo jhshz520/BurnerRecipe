@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: neurodebian:jessie
+
+%labels
+   AUTHOR krause@mpib-berlin.mpg.de
+
+%post
+echo "deb http://ftp5.gwdg.de/pub/misc/cran/bin/linux/debian jessie-cran3/" > /etc/apt/sources.list.d/cran.list
+apt-key adv --keyserver keys.gnupg.net --recv-key '6212B7B7931C4BB16280BA1306F90DE5381BA480'
+apt-get update
+apt-get -y install libopenblas-base libxml2-dev wget locales
+apt-get install -y r-recommended -t jessie-cran3
+cat <<EOF > /etc/locale.gen
+de_DE ISO-8859-1
+de_DE.UTF-8 UTF-8
+de_DE@euro ISO-8859-15
+en_US ISO-8859-1
+en_US.ISO-8859-15 ISO-8859-15
+en_US.UTF-8 UTF-8
+EOF
+locale-gen -a
+cat <<EOF > /tmp/install.R
+chooseCRANmirror(ind=30)
+source('http://openmx.psyc.virginia.edu/getOpenMx.R')
+EOF
+Rscript /tmp/install.R

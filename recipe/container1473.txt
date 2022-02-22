@@ -1,0 +1,21 @@
+Bootstrap:docker
+From: ubuntu:17.10
+
+%post
+/bin/sh build.sh
+
+
+%files
+#Installation of deps
+build.sh
+
+
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    TRADIS_VERSION=v1.4.0
+    LC_ALL="C"
+    PATH="/usr/bin/miniconda/bin:$PATH"
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

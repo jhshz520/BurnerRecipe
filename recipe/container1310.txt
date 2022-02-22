@@ -1,0 +1,17 @@
+Bootstrap:docker
+From:alpine:3.7
+
+%post
+#MultiQC Version
+/bin/sh build.sh
+pip install multiqc
+
+%files
+#Installation of MultiQC
+build.sh
+
+%environment
+    MULTIQC_VERSION=v1.4
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

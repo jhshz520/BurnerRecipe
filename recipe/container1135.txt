@@ -1,0 +1,28 @@
+Bootstrap:docker
+From:alpine:3.6
+
+%post
+/bin/sh build.sh
+#get things up and running
+PICARD_VERSION=2.15.0
+PICARD_HOME=/opt/picard
+mkdir -p $PICARD_HOME
+cd $PICARD_HOME
+wget --quiet https://github.com/broadinstitute/picard/releases/download/${PICARD_VERSION}/picard.jar 
+#Install call script
+mv /picard.sh /usr/bin/picard
+chmod +x /usr/bin/picard
+
+%files
+#Installation of tool
+build.sh
+#Call script
+picard.sh 
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    PICARD_VERSION=2.15.0
+    PICARD_HOME=/opt/picard
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

@@ -1,0 +1,7 @@
+Bootstrap:docker
+From:ubuntu:latest
+
+%runscript
+echo "Hi Corinne! Nice glasses"
+echo "Psst. Let me tell you a secret" >> secret.txt
+

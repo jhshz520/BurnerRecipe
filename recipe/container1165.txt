@@ -1,0 +1,20 @@
+Bootstrap: docker
+From: ubuntu:14.04
+
+%post
+    apt-get -y update
+    apt-get -y upgrade
+    apt-get -y install apt-file
+    apt-get -y install software-properties-common
+    apt-get -y install wget
+    apt-get -y install apt-transport-https
+    add-apt-repository http://dl.openfoam.org/ubuntu
+    sh -c "wget -O - http://dl.openfoam.org/gpg.key | apt-key add -"
+    apt-get -y update
+    apt-get -y install openfoam4
+    # sed -ie '$ a \. /opt/openfoam4/etc/bashrc' /root/.bashrc
+    echo '. /opt/openfoam4/etc/bashrc' >>$SINGULARITY_ENVIRONMENT
+
+%runscript
+    simpleFoam
+

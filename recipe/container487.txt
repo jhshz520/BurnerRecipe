@@ -1,0 +1,6 @@
+Bootstrap: docker
+From: scilifelab/ngi-chipseq:latest
+
+%post
+    mkdir -p /athena
+    echo "All Set!"

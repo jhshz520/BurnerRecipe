@@ -1,0 +1,12 @@
+BootStrap: docker
+From: opensuse:42.3
+
+%runscript
+    python "$@"
+
+%post
+    zypper -n install libpsm_infinipath1
+    zypper ar https://download.opensuse.org/repositories/home:/pelupes:/amuse/openSUSE_Leap_42.3/ amuse
+    zypper --gpg-auto-import-keys refresh amuse
+    echo "install amuse..."
+    zypper -n install amuse

@@ -1,0 +1,32 @@
+Bootstrap: docker
+
+From: ubuntu
+
+
+
+%post
+
+    apt-get -y install python3
+
+    apt-get update
+
+    apt-get update --fix-missing
+
+    apt-get -y install python3-pip    
+
+    apt-get -y install git-core
+
+    git clone https://github.com/GPflow/GPflow.git
+
+    cd GPflow
+
+    export LC_all=C
+
+    pip3 install .
+
+    cd
+
+    pip3 install -U pymc3
+
+    pip3 install -U pytest
+

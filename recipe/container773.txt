@@ -1,0 +1,21 @@
+Bootstrap: docker
+From: debian:jessie
+
+%help
+You are using a container with debian_jessie
+
+%environment
+LC_ALL=C
+export LC_ALL
+LC_NUMERIC=en_GB.UTF-8
+export LC_NUMERIC
+
+%post
+apt-get -y update
+apt-get -y dist-upgrade
+apt-get -y install file
+apt-get -y install libpng12-0 libmng1
+apt-get -y install build-essential
+
+%runscript
+echo "Arguments received: $*"

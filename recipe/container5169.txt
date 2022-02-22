@@ -1,0 +1,22 @@
+Bootstrap: docker
+From: poldracklab/fmriprep:1.1.8
+
+%labels
+Maintainer Matthew Flister
+Version 1.1.8
+
+%help
+This container runs fmriprep.
+
+%post
+    # default mount points
+    mkdir -p /scratch/global /scratch/local /rcc/stor1/refdata /rcc/stor1/projects /rcc/stor1/depts
+
+    apt-get update && apt-get install -y --no-install-recommends \
+        wget \
+        vim 
+    apt-get clean
+    
+%runscript
+    exec fmriprep "$@"
+

@@ -1,0 +1,41 @@
+Bootstrap: docker
+From: ubuntu:xenial
+
+#------------------------------------
+%setup
+#------------------------------------
+
+mkdir -p $SINGULARITY_ROOTFS/apps
+
+#------------------------------------
+%post
+#------------------------------------
+
+export DEBIAN_FRONTEND=noninteractive
+apt-get update && apt-get install -y --no-install-recommends apt-utils \
+    sudo \
+    git \
+    wget \
+    curl \
+    zip \
+    unzip \
+    python2.7 \
+    python-pip \
+    rsync \
+    openssh-client
+
+sudo pip install --upgrade pip
+sudo pip install --upgrade setuptools
+sudo pip install dicom2tar
+
+#dicomunwrap, will install pydicom
+cd /apps
+git clone https://gitlab.com/cfmm/DicomRaw
+cd DicomRaw
+sudo pip install -r requirements.txt
+%environment
+export PATH=/apps/DicomRaw/bin:$PATH
+
+%runscript 
+exec dicom2tar "$@"
+

@@ -1,0 +1,9 @@
+Bootstrap:docker
+From:biocontainers/optitype:1.2--py35_0
+Registry: quay.io
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    OPTITYPE=1.2
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

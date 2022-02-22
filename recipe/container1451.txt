@@ -1,0 +1,6 @@
+BootStrap: docker
+From: r-base
+
+%post
+    echo 'install.packages(c("ggplot2",  "RColorBrewer", "plotrix"), repos="http://cran.us.r-project.org", dependencies=TRUE)' > /tmp/packages.R \
+&& Rscript /tmp/packages.R

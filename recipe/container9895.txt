@@ -1,0 +1,211 @@
+BootStrap: debootstrap
+OSVersion: xenial
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+IncludeCmd: yes
+Include: bash vim less man-db apt-utils tzdata
+
+
+%runscript
+    echo "Opening container...ubuntu xenial: vsearch, PEAR, fastq-join, pandaseq, jellyfish, casper, FLASH, fastq-multx, cutadapt, SWARM, REAPER, tally, minion, swan, tagCleaner, flexbar, usearch, deML, trimmomatic, prinseq"
+
+
+%labels
+    MAINTAINER Pierre-Edouard_GUERIN
+    INSTITUTE CNRS
+    TEAM Biogeographie_Ecologie_Vertebres
+    BUILD 1.2
+    SINGULARITY_VERSION 2.4.2-dist
+    PERL 5.26.1
+    PYTHON 3.6.8
+    VSEARCH 2.13.4
+    PEAR 0.9.11
+    FASTQ-JOIN 1.3.1
+    PANDASEQ 2.11
+    JELLYFISH 2.2.6
+    CASPER 0.8.2
+    FLASH 1.2.11
+    FASTQ-MULTX 1.3.1
+    CUTADAPT 2.3
+    SWARM 2.2.2
+    REAPER 13.274
+    TAGCLEANER 0.16
+    FLEXBAR 3.0.3
+    USEARCH 11.0.667
+    deML 1.0
+    prinseq 0.20.4
+
+
+%environment    
+    export LC_ALL=C
+
+
+%post
+    mv /etc/apt/sources.list /etc/apt/sources.list.bak
+
+    echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse
+    deb http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-proposed main restricted universe multiverse
+    deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse" >> /etc/apt/sources.list
+
+    ##  MBB config
+    mkdir -p /share/apps/bin
+    mkdir /share/apps/lib
+    mkdir /share/apps/gridengine
+    mkdir /share/bio
+    mkdir -p /opt/gridengine
+    mkdir -p /export/scrach
+    mkdir -p /usr/lib64
+    /usr/sbin/groupadd --system --gid 400 sge
+    /usr/sbin/useradd --system --uid 400 --gid 400 -c GridEngine --shell /bin/true --home /opt/gridengine sge
+    ln -s /bin/bash /bin/mbb_bash
+    ln -s /bin/bash /bin/isem_bash
+
+    ## git, make, wget
+    apt-get -y --force-yes update
+    yes | apt-get install build-essential
+    yes | apt-get install git
+    yes | apt install wget
+    yes | apt-get install autoconf autogen libtool
+
+    ## zlib, boost, cmake, pigz
+    yes | apt install zlib1g-dev libbz2-dev pkg-config libboost-all-dev gettext cmake pigz
+
+
+    ## pip, biopython2
+    yes | apt-get install python-setuptools
+    yes | apt-get install python-dev
+    yes | apt-get install python-numpy
+    yes | apt-get install python-biopython
+    yes | apt install python-pip
+    yes | apt-get update
+
+    ## python3
+    yes | apt install python3-pip
+
+    ## GNU parallel
+    yes | apt install parallel
+    
+    ## cutadapt
+    yes | python3 -m pip install cutadapt
+
+    ## vsearch
+    wget https://github.com/torognes/vsearch/archive/v2.13.4.tar.gz
+    tar xzf v2.13.4.tar.gz
+    cd vsearch-2.13.4
+    ./autogen.sh
+    ./configure
+    make
+    make install
+    cd ..
+
+    ## PEAR
+    wget https://github.com/Grelot/bioinfo_singularity_recipes/raw/master/packages/pear-0.9.11-linux-x86_64.tar.gz
+    tar xzf pear-0.9.11-linux-x86_64.tar.gz
+    cp pear-0.9.11-linux-x86_64/bin/pear /usr/local/bin/
+
+
+    ## fastq-join
+    git clone https://github.com/brwnj/fastq-join
+    cd fastq-join
+    make
+    cp fastq-join /usr/local/bin/
+    cd ..
+
+    ## pandaseq
+    git clone http://github.com/neufeld/pandaseq.git/
+    cd pandaseq
+    ./autogen.sh
+    ./configure
+    make
+    make install
+    cd ..
+
+    ## yaggo
+    wget https://github.com/gmarcais/yaggo/releases/download/v1.5.10/yaggo
+    cp yaggo /usr/local/bin/
+
+
+    ## jellyfish
+    wget https://github.com/gmarcais/Jellyfish/releases/download/v2.2.6/jellyfish-2.2.6.tar.gz
+    tar xzf jellyfish-2.2.6.tar.gz
+    cd jellyfish-2.2.6
+    autoreconf -i
+    ./configure
+    make
+    make install
+    cd ..
+
+    ## casper
+    wget http://best.snu.ac.kr/casper/program/casper_v0.8.2.tar.gz
+    tar xzf casper_v0.8.2.tar.gz
+    cd casper_v0.8.2
+    sed -i 's/fp==NULL/!fp/g' util.c
+    make
+    cp casper /usr/local/bin/
+    cd ..
+
+    ## FLASH
+    wget https://github.com/Grelot/bioinfo_singularity_recipes/raw/master/packages/FLASH-1.2.11.tar.gz
+    tar xzf FLASH-1.2.11.tar.gz
+    cd FLASH-1.2.11
+    make
+    cp flash /usr/local/bin/
+    cd ..
+
+    ## fastq-multx
+    git clone https://github.com/brwnj/fastq-multx
+    cd fastq-multx
+    make
+    cp fastq-multx /usr/local/bin/
+    cd ..
+
+    ## SWARM
+    git clone https://github.com/torognes/swarm.git
+    cd swarm/src/
+    make
+    cd ../../
+    cp swarm/bin/swarm /usr/local/bin/
+
+    ## REAPER
+    #### tally
+    wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/binaries/reaper-13-100/linux/tally -O /usr/local/bin/tally
+    chmod 775 /usr/local/bin/tally
+    #### swan
+    wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/binaries/reaper-13-100/linux/swan -O /usr/local/bin/swan
+    chmod 775 /usr/local/bin/swan
+    #### reaper
+    wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/binaries/reaper-13-100/linux/reaper -O /usr/local/bin/reaper
+    chmod 775 /usr/local/bin/reaper
+    #### minion
+    wget http://wwwdev.ebi.ac.uk/enright-dev/kraken/reaper/binaries/reaper-13-100/linux/minion -O /usr/local/bin/minion
+    chmod 775 /usr/local/bin/minion
+
+    ## tagCleaner
+    wget https://github.com/Grelot/bioinfo_singularity_recipes/raw/master/packages/tagcleaner-standalone-0.16.tar.gz
+    tar xzf tagcleaner-standalone-0.16.tar.gz
+    cp tagcleaner-standalone-0.16/tagcleaner.pl /usr/local/bin/tagcleaner
+    chmod 775 /usr/local/bin/tagcleaner
+
+    ## flexbar
+    yes | apt install flexbar
+
+    ## usearch
+    wget https://github.com/Grelot/bioinfo_singularity_recipes/raw/master/packages/usearch11.0.667_i86linux32 -O /usr/local/bin/usearch
+    chmod 755 /usr/local/bin/usearch
+
+    ## deML
+    git clone https://github.com/grenaud/deML.git
+    cd deML/
+    make    
+    cp src/deML /usr/local/bin/deML
+    cd ..
+
+    ## Prinseq
+    wget https://github.com/Grelot/bioinfo_singularity_recipes/raw/master/packages/prinseq-lite-0.20.4.tar.gz
+    tar xzf prinseq-lite-0.20.4.tar.gz

@@ -1,0 +1,15 @@
+BootStrap: debootstrap
+OSVersion: xenial
+MirrorURL: http://uk.archive.ubuntu.com/ubuntu/
+
+%post
+    apt-get update && apt-get install -y curl bzip2
+
+    curl -LO http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh
+    bash Miniconda-latest-Linux-x86_64.sh -p /miniconda -b
+    rm Miniconda-latest-Linux-x86_64.sh
+    PATH=/miniconda/bin:${PATH}
+    conda update -y conda
+
+
+    conda install -y pytorch 

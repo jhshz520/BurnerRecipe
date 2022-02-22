@@ -1,0 +1,15 @@
+Bootstrap:docker
+From:alpine:3.6
+
+%post
+/bin/sh build.sh
+
+%files
+#Installation of Subread
+build.sh
+
+%environment
+    SubRead_VERSION=1.5.3
+
+%labels
+Maintainer	alexander.peltzer@qbic.uni-tuebingen.de

@@ -1,0 +1,16 @@
+Bootstrap:docker
+From:ubuntu:16.04
+
+%post
+/bin/sh build.sh
+
+%files
+#Installation of tool
+build.sh
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    R_VERSION=v3.2.3-4
+
+%labels
+Maintainer	sven.fillinger@qbic.uni-tuebingen.de

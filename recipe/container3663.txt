@@ -1,0 +1,25 @@
+Bootstrap: shub
+From: mcw-rcc/r-base:3.5.0
+
+%labels
+Maintainer Matthew Flister
+Version 07.23.18
+
+%help
+This container runs apps in Shiny Server.
+
+%post
+    # default mount points
+    mkdir -p /scratch/global /scratch/local /rcc/stor1/refdata /rcc/stor1/projects /rcc/stor1/depts
+
+    # install gdebi
+    apt-get update && apt-get install -y gdebi-core && apt-get clean
+
+    # install R shiny package
+    R -e "install.packages('shiny', repos='https://cran.rstudio.com/')"
+
+    # install shiny server
+    wget https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.7.907-amd64.deb
+    gdebi --n shiny-server-1.5.7.907-amd64.deb
+    rm shiny-server-1.5.7.907-amd64.deb
+

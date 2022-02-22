@@ -1,0 +1,21 @@
+Bootstrap:docker
+From:ubuntu:latest
+
+%post
+/bin/sh build.sh
+wget https://github.com/mothur/mothur/releases/download/v1.39.5/Mothur.linux_64.noReadLine.zip
+unzip Mothur.linux_64.noReadLine.zip
+rm Mothur.linux_64.noReadLine.zip
+mv /mothur/blast/bin/* /usr/local/bin/
+mv /mothur/* /usr/local/bin/
+
+%files
+#Installation of tool
+build.sh
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    MOTHUR=v1.39.5
+
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de

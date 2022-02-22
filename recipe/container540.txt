@@ -1,0 +1,27 @@
+BootStrap: docker
+From: ubuntu:16.04
+
+%post
+    apt-get -y update
+    apt-get -y install locales curl
+    locale-gen en_US.UTF-8
+    apt-get -y install tcl8.5-dev tk8.5-dev libtogl-dev mesa-common-dev libglu1-mesa-dev libxmu-dev tix-dev
+    apt-get clean
+    curl -sSL -O "https://sourceforge.net/projects/netgen-mesher/files/netgen-mesher/5.3/netgen-5.3.1.tar.gz"
+    tar xf netgen-5.3.1.tar.gz
+    cd netgen-*
+    ./configure --with-tcl=/usr/lib/tcl8.5/ --with-tk=/usr/lib/tk8.5/
+    make
+    make install
+
+%environment
+    LANG=en_US.UTF-8
+    LANGUAGE=en_US:en
+    LC_ALL=en_US.UTF-8
+    export LANG LANGUAGE LC_ALL
+    export LD_LIBRARY_PATH=/opt/netgen/lib:$LD_LIBRARY_PATH
+    export PATH=/opt/netgen/bin:$PATH
+    export NETGENDIR=/opt/netgen/bin
+
+%runscript
+    netgen

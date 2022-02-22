@@ -1,0 +1,7 @@
+Bootstrap: docker
+From: willprice/container-test:latest
+
+%post
+
+%help
+    Test container for travis-CI -> singularity hub workflow debugging

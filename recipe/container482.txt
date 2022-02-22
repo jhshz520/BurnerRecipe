@@ -1,0 +1,23 @@
+Bootstrap:docker
+From:alpine:3.6
+
+%post
+/bin/sh build.sh
+
+%files
+build.sh
+
+%runscript
+    echo "Arguments received: $*"
+    exec python2.7 "$@"
+
+%environment
+of your container
+    PYENVCENTRAXX_VERSION=v1.0
+
+%labels
+Maintainer	sven.fillinger@qbic.uni-tuebingen.de
+
+%test
+    python2 --version
+    pip -V	

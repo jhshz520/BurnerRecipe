@@ -1,0 +1,46 @@
+BootStrap: shub
+From: mcw-rcc/r-base:3.5.1
+
+%help
+    This container runs RStudio.
+
+%labels
+    Maintainer Matthew Flister
+    Version 09.18.18
+    Rstudio_Version 1.1.456
+    R_Version 3.5.1
+
+%environment
+    export QT_XKB_CONFIG_ROOT=/usr/share/X11/xkb
+    export R_LIBS=$R_LIBS:/extR/library
+
+%post
+    mkdir -p /extR/library
+    apt-get update
+    apt-get -y install \
+        software-properties-common \
+        apt-transport-https \
+        gstreamer1.0-plugins-base \
+        libcdparanoia0 \
+        libgstreamer-plugins-base1.0-0 \
+        libgstreamer1.0-0 \
+        libjpeg62 \
+        libogg0 \
+        libopus0 \
+        liborc-0.4-0 \
+        libtheora0 \
+        libvisual-0.4-0 \
+        libvorbis0a \
+        libvorbisenc2 \
+        libxslt-dev \
+        locales \
+        texlive-fonts-extra \
+        wget \
+        libssl1.0.0 \
+        libssl-dev \
+        gdebi-core
+    apt-get clean
+    wget https://download1.rstudio.org/rstudio-xenial-1.1.456-amd64.deb
+    gdebi --n rstudio-xenial-1.1.456-amd64.deb
+    rm rstudio-xenial-1.1.456-amd64.deb
+    R -e 'source("https://bioconductor.org/biocLite.R"); biocLite("rtracklayer", lib="/usr/local/lib/R/library"); biocLite("openssl", lib="/usr/local/lib/R/library")'

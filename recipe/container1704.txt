@@ -1,0 +1,36 @@
+Bootstrap: docker
+From: biobakery/shortbred:latest
+
+%environment
+  # use bash as default shell
+  SHELL=/bin/bash
+  export SHELL
+
+%setup
+  # runs on host - the path to the image is $SINGULARITY_ROOTFS
+
+%post
+  # post-setup script
+
+  # load environment variables
+  . /environment
+
+  # use bash as default shell and prepend /scratch/bin to PATH
+  echo 'SHELL=/bin/bash' >> /environment
+  echo 'PATH=/scratch/bin:$PATH' >> /environment
+  echo 'export PATH' >> /environment
+  echo '. /home/linuxbrew/.profile' >> /environment
+  # make environment file executable
+  chmod +x /environment
+
+  # default mount paths
+  mkdir /scratch /data 
+
+%apprun identify
+  exec shortbred_identify.py "$@"
+  
+%apprun quantify
+  exec shortbred_quantify.py "$@" 
+  
+%test
+  # test that script is a success

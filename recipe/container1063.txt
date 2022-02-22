@@ -1,0 +1,5 @@
+Bootstrap:docker
+From:continuumio/miniconda3:latest
+
+%runscript
+exec conda install --yes -c conda-forge iris

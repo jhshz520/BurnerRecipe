@@ -1,0 +1,30 @@
+BootStrap: docker
+From: ubuntu:18.04
+
+%labels
+Maintainer tando
+base.image="ubuntu:18.04"
+version="1"
+software="bwa"
+software.version="0.7.12"
+
+%help
+Being in the folder of the container
+Launch the command: singularity run bwa-0.7.12.simg + arguments to use bwa 
+
+
+%post
+apt-get update
+apt-get install -y build-essential wget gcc zlib1g-dev
+mkdir -p /opt/sources/
+cd /opt/sources/
+wget https://github.com/lh3/bwa/archive/0.7.12.tar.gz
+tar xvfz 0.7.12.tar.gz
+cd bwa-0.7.12
+make
+cp -r /opt/sources/bwa-0.7.12 /usr/local/bwa-0.7.12
+chmod +x -R /usr/local/bwa-0.7.12
+
+%runscript
+exec /usr/local/bwa-0.7.12/bwa "$@"
+

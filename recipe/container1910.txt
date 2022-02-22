@@ -1,0 +1,8 @@
+
+Bootstrap:docker
+From:electronioncollider/jleic:test
+
+
+%runscript
+	bash --init-file /etc/profile.d/jlab.sh -c /eic/utilities/eic_xstart.sh
+

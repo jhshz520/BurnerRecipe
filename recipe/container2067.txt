@@ -1,0 +1,15 @@
+Bootstrap: docker
+From: continuumio/anaconda
+
+%post
+
+apt-get update && apt-get install -y gcc
+
+export PATH=/opt/conda/bin:${PATH}
+echo 'export PATH=/opt/conda/bin:${PATH}' >> $SINGULARITY_ENVIRONMENT
+
+conda config --add channels r
+conda config --add channels bioconda
+conda config --add channels conda-forge
+
+conda install macs2

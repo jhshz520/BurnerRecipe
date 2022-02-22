@@ -1,0 +1,10 @@
+Bootstrap:docker
+From:biocontainers/varscan:2.4.2--1
+Registry: quay.io
+
+%environment
+#Set your toolname here and the appropriate version to have this in the metadata of your container
+    VARSCAN=2.4.2
+%labels
+Maintainer	alexander.peltzer@uni-tuebingen.de
+
